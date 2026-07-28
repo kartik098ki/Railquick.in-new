@@ -162,6 +162,9 @@ const reels = [
   { id: 8, shortcode: "DSaYD3yjjcP" },
 ];
 
+// Stable outside component — prevents infinite re-render in typewriter useEffect
+const TYPING_CATEGORIES = ['Snacks', 'Water', 'Chargers', 'Essentials', 'Medicines', 'Pillows'];
+
 export default function HomePage() {
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [activeReelIndex, setActiveReelIndex] = useState(0);
@@ -169,34 +172,38 @@ export default function HomePage() {
   const reelsSectionRef = useRef<HTMLDivElement>(null);
   const [isReelsInView, setIsReelsInView] = useState(false);
 
-  // Authentic Typewriter animation state (Smooth, Slower Pace)
-  const typingCategories = ['Snacks', 'Water', 'Chargers', 'Essentials', 'Medicines', 'Pillows'];
+  // Authentic Typewriter animation state
   const [typedText, setTypedText] = useState('');
   const [catIndex, setCatIndex] = useState(0);
   const [isDeletingCat, setIsDeletingCat] = useState(false);
 
   useEffect(() => {
-    const currentCategory = typingCategories[catIndex % typingCategories.length];
-    
-    const timeout = setTimeout(() => {
-      if (!isDeletingCat) {
-        const nextText = currentCategory.substring(0, typedText.length + 1);
-        setTypedText(nextText);
-        if (nextText === currentCategory) {
-          setTimeout(() => setIsDeletingCat(true), 3200);
-        }
-      } else {
-        const nextText = currentCategory.substring(0, typedText.length - 1);
-        setTypedText(nextText);
-        if (nextText === '') {
-          setIsDeletingCat(false);
-          setCatIndex((prev) => (prev + 1) % typingCategories.length);
-        }
-      }
-    }, isDeletingCat ? 50 : 80);
+    let timer: NodeJS.Timeout;
+    const currentCategory = TYPING_CATEGORIES[catIndex % TYPING_CATEGORIES.length];
 
-    return () => clearTimeout(timeout);
-  }, [typedText, isDeletingCat, catIndex, typingCategories]);
+    if (!isDeletingCat) {
+      if (typedText !== currentCategory) {
+        timer = setTimeout(() => {
+          setTypedText(currentCategory.slice(0, typedText.length + 1));
+        }, 90);
+      } else {
+        timer = setTimeout(() => {
+          setIsDeletingCat(true);
+        }, 2000);
+      }
+    } else {
+      if (typedText !== '') {
+        timer = setTimeout(() => {
+          setTypedText(currentCategory.slice(0, typedText.length - 1));
+        }, 45);
+      } else {
+        setIsDeletingCat(false);
+        setCatIndex((prev) => (prev + 1) % TYPING_CATEGORIES.length);
+      }
+    }
+
+    return () => clearTimeout(timer);
+  }, [typedText, isDeletingCat, catIndex]);
 
   // Animated counter state
   const [countersAnimated, setCountersAnimated] = useState(false);
@@ -610,9 +617,8 @@ export default function HomePage() {
               </Button>
             </div>
 
-            {/* Mobile Action Button — with small label above */}
-            <div className="md:hidden flex flex-col items-center gap-0.5">
-              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">order</span>
+            {/* Mobile Action Button */}
+            <div className="md:hidden">
               <button 
                 onClick={handleTestNow}
                 className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-full px-4 py-1.5 text-xs font-extrabold shadow-sm active:scale-95 transition-all lowercase"
@@ -653,8 +659,8 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Mobile Hero — exact match to reference photo */}
-        <div className="md:hidden relative bg-slate-950 overflow-hidden" style={{height: '100dvh', minHeight: '680px'}}>
+        {/* Mobile Hero — stable height, no dynamic dvh resize artifact on scroll */}
+        <div className="md:hidden relative bg-slate-950 overflow-hidden min-h-[640px] flex flex-col justify-between pt-28 pb-10">
 
           {/* Full-bleed portrait train background */}
           <div className="absolute inset-0 z-0">
@@ -665,14 +671,14 @@ export default function HomePage() {
             />
             {/* Rain & Lightning */}
             <RainThunderEffect />
-            {/* White-to-transparent fade at very top — smooth blend from white nav into dark image */}
-            <div className="absolute top-0 inset-x-0 z-10 pointer-events-none" style={{height:'18%', background:'linear-gradient(to bottom, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.25) 35%, transparent 100%)'}} />
+            {/* Smooth White-to-transparent fade at top under white nav header */}
+            <div className="absolute top-0 inset-x-0 z-10 pointer-events-none" style={{height:'130px', background:'linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.45) 45%, rgba(255,255,255,0.1) 75%, transparent 100%)'}} />
             {/* Bottom dark zone for buttons + text readability */}
-            <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{height:'55%', background:'linear-gradient(to top, #020617 45%, rgba(2,6,23,0.90) 62%, rgba(2,6,23,0.50) 78%, transparent 100%)'}} />
+            <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{height:'60%', background:'linear-gradient(to top, #020617 45%, rgba(2,6,23,0.90) 65%, rgba(2,6,23,0.40) 82%, transparent 100%)'}} />
           </div>
 
-          {/* Full-height flex layout — nav spacer → badges+headline → flex-1 train view → buttons */}
-          <div className="absolute inset-0 z-20 flex flex-col" style={{paddingTop: '116px'}}>
+          {/* Mobile Hero Content Layout */}
+          <div className="relative z-20 flex flex-col justify-between flex-1 px-5">
 
             {/* Badges + headline at top of hero content */}
             <div className="px-5 pt-3">
@@ -712,7 +718,7 @@ export default function HomePage() {
             <div className="flex-1" />
 
             {/* Buttons pinned to bottom */}
-            <div className="flex flex-col gap-3 px-5 pb-10">
+            <div className="flex flex-col gap-3 pt-6">
               <button
                 onClick={handleTestNow}
                 className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-base font-extrabold shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
@@ -950,11 +956,12 @@ export default function HomePage() {
             <ArrowRight className="w-5 h-5" />
           </button>
 
-          {/* Scrolling Track */}
+          {/* Scrolling Track — touch-action pan-x so vertical page scroll still works */}
           <div 
             ref={containerRef}
             onScroll={handleContainerScroll}
             className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory py-4 sm:py-6 px-4 no-scrollbar scroll-smooth"
+            style={{touchAction: 'pan-x'}}
           >
             {reels.map((reel, index) => {
               const isActive = index === activeReelIndex;
@@ -976,8 +983,10 @@ export default function HomePage() {
                     className="absolute inset-0 w-full h-full bg-slate-900"
                   ></iframe>
                   
-                  {/* Overlay to disable iframe interaction when not active, allowing for smooth swipe/scroll */}
-                  {!isActive && <div className="absolute inset-0 z-10 cursor-pointer" />}
+                  {/* Transparent overlay on mobile so page vertical scroll works 100% smoothly */}
+                  <div className="absolute inset-0 z-20 pointer-events-auto md:hidden" />
+                  {/* Desktop: block inactive iframes for smooth swipe */}
+                  {!isActive && <div className="absolute inset-0 z-20 cursor-pointer hidden md:block" />}
                 </div>
               );
             })}
