@@ -1,0 +1,1381 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import Link from "next/link";
+import Footer from "@/components/Footer";
+import Logo from "@/components/Logo";
+import RainThunderEffect from "@/components/RainThunderEffect";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Pill,
+  Package,
+  Smartphone,
+  Building2,
+  Bath,
+  Cookie,
+  Zap,
+  Clock,
+  Sparkles,
+  CheckCircle2,
+  Box,
+  Star,
+  ArrowRight,
+  History as HistoryIcon,
+  Train,
+  Volume2,
+  VolumeX,
+  Heart,
+  MessageCircle,
+  Play,
+  Pause,
+  Instagram,
+  ArrowLeft,
+  Mail,
+  MapPin,
+  Users,
+  Map,
+  Loader2,
+  ShieldCheck,
+  Droplet,
+  UtensilsCrossed,
+} from "lucide-react";
+
+// Submit to backend API routes
+async function submitToWaitlist(email: string, city?: string) {
+  const response = await fetch('/api/waitlist', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, city: city || '' })
+  });
+  if (!response.ok) return false;
+  const resData = await response.json().catch(() => ({}));
+  return resData.success === true;
+}
+
+async function submitContact(data: Record<string, string>) {
+  const response = await fetch('/api/contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) return false;
+  const resData = await response.json().catch(() => ({}));
+  return resData.success === true;
+}
+
+const steps = [
+  {
+    number: '01',
+    title: 'Inside Train & Upcoming Station',
+    description: 'Order from inside the running train for delivery at the upcoming station.',
+    icon: <Box className="w-6 h-6 sm:w-8 sm:h-8" />
+  },
+  {
+    number: '02',
+    title: 'Add Details & Order',
+    description: 'Add your train number and seat, pick what you need.',
+    icon: <Package className="w-6 h-6 sm:w-8 sm:h-8" />
+  },
+  {
+    number: '03',
+    title: 'On-Seat Delivery',
+    description: 'We will deliver directly to you in the running train.',
+    icon: <Zap className="w-6 h-6 sm:w-8 sm:h-8" />
+  },
+];
+
+const products = [
+  {
+    title: '24/7 Dedicated Support',
+    description: 'Need help? Reach out to our dedicated support team anytime for any inquiries as we prepare for launch.',
+    bg: 'bg-blue-50',
+    icon: <Clock className="w-6 h-6 text-emerald-600" />,
+    wide: true,
+  },
+  {
+    title: 'Travel Essentials',
+    description: 'Blankets, pillows, locks, and travel accessories.',
+    bg: 'bg-slate-50',
+    icon: <Package className="w-6 h-6 text-slate-600" />,
+  },
+  {
+    title: 'Electronics',
+    description: 'Chargers, power banks, earphones and gadgets.',
+    bg: 'bg-slate-50',
+    icon: <Smartphone className="w-6 h-6 text-slate-600" />,
+  },
+  {
+    title: 'City Famous',
+    description: 'Specialities and famous items from your current city.',
+    bg: 'bg-slate-50',
+    icon: <Building2 className="w-6 h-6 text-slate-600" />,
+  },
+  {
+    title: 'Snacks',
+    description: 'Quick munchies and travel-friendly snacks.',
+    bg: 'bg-slate-50',
+    icon: <Cookie className="w-6 h-6 text-slate-600" />,
+  },
+];
+
+const testimonials = [
+  { name: 'Rohit', role: 'Passenger at Delhi Station', text: 'Local vendors often sell low-quality or fake products. I would always prefer ordering from RailQuick because it solves this exact problem.' },
+  { name: 'Shreya', role: 'Solo Traveler', text: 'I\'ll definitely use this service. No overpricing, no different or fake products — that\'s what travelers actually need.' },
+  { name: 'Varun', role: 'Regular Commuter', text: 'Finding trusted products during a train journey is always a problem. RailQuick makes it simple, reliable, and stress-free.' },
+  { name: 'Gaurav', role: 'Business Traveler', text: 'Knowing that the products are verified gives confidence. I don\'t mind ordering if I know I\'m getting genuine items.' },
+  { name: 'Ayush', role: 'Student Traveler', text: 'This feels like a service Indian Railways passengers have needed for a long time.' },
+];
+
+const stats = [
+  { value: '100+', numericValue: 100, suffix: '+', label: 'Ongoing Train Deliveries' },
+  { value: '400+', numericValue: 400, suffix: '+', label: 'Testers' },
+  { value: '2000+', numericValue: 2000, suffix: '+', label: 'Waitlist Users' },
+  { value: '1000+', numericValue: 1000, suffix: '+', label: 'Interactions' },
+];
+
+const brands = [
+  { name: 'ANI', logo: '/images/brands/ani.svg' },
+  { name: 'Delhi Yuva Festival', logo: '/images/brands/dyf.svg' },
+  { name: 'Delhi Government', logo: '/images/brands/delhi-govt.svg' },
+  { name: 'IIT KGP', logo: '/images/brands/iit-kgp.svg' },
+  { name: 'IIT Delhi', logo: '/images/brands/iit-delhi.svg' },
+  { name: 'Times of India', logo: '/images/brands/toi.svg' },
+  { name: 'Aaj Tak', logo: '/images/brands/aajtak.svg' },
+  { name: 'Delhi Yuva Festival', logo: '/images/brands/dyf2.svg' },
+];
+
+const reels = [
+  { id: 1, shortcode: "DaI7oi8CGq5" },
+  { id: 2, shortcode: "DZ-p8WzC4I3" },
+  { id: 3, shortcode: "DZ2DnOsiAAQ" },
+  { id: 4, shortcode: "DZsQDrzi_Xq" },
+  { id: 5, shortcode: "DZKSVyJiORs" },
+  { id: 6, shortcode: "DZHX9mNiPjD" },
+  { id: 7, shortcode: "DSdBNYVjlBc" },
+  { id: 8, shortcode: "DSaYD3yjjcP" },
+];
+
+export default function HomePage() {
+  const [headerScrolled, setHeaderScrolled] = useState(false);
+  const [activeReelIndex, setActiveReelIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const reelsSectionRef = useRef<HTMLDivElement>(null);
+  const [isReelsInView, setIsReelsInView] = useState(false);
+
+  // Authentic Typewriter animation state (Smooth, Slower Pace)
+  const typingCategories = ['Snacks', 'Water', 'Chargers', 'Essentials', 'Medicines', 'Pillows'];
+  const [typedText, setTypedText] = useState('');
+  const [catIndex, setCatIndex] = useState(0);
+  const [isDeletingCat, setIsDeletingCat] = useState(false);
+
+  useEffect(() => {
+    const currentCategory = typingCategories[catIndex % typingCategories.length];
+    
+    const timeout = setTimeout(() => {
+      if (!isDeletingCat) {
+        const nextText = currentCategory.substring(0, typedText.length + 1);
+        setTypedText(nextText);
+        if (nextText === currentCategory) {
+          setTimeout(() => setIsDeletingCat(true), 3200);
+        }
+      } else {
+        const nextText = currentCategory.substring(0, typedText.length - 1);
+        setTypedText(nextText);
+        if (nextText === '') {
+          setIsDeletingCat(false);
+          setCatIndex((prev) => (prev + 1) % typingCategories.length);
+        }
+      }
+    }, isDeletingCat ? 110 : 220);
+
+    return () => clearTimeout(timeout);
+  }, [typedText, isDeletingCat, catIndex, typingCategories]);
+
+  // Animated counter state
+  const [countersAnimated, setCountersAnimated] = useState(false);
+  const [animatedValues, setAnimatedValues] = useState(stats.map(() => 0));
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !countersAnimated) {
+          setCountersAnimated(true);
+          stats.forEach((stat, index) => {
+            const target = stat.numericValue;
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                current = target;
+                clearInterval(timer);
+              }
+              setAnimatedValues((prev) => {
+                const newVals = [...prev];
+                newVals[index] = Math.round(current);
+                return newVals;
+              });
+            }, duration / steps);
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+    return () => observer.disconnect();
+  }, [countersAnimated]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsReelsInView(entry.isIntersecting);
+      },
+      { threshold: 0.3 }
+    );
+    if (reelsSectionRef.current) {
+      observer.observe(reelsSectionRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  const handlePrevReel = () => {
+    setActiveReelIndex((prev) => {
+      const next = (prev - 1 + reels.length) % reels.length;
+      if (containerRef.current) {
+        const container = containerRef.current;
+        const itemWidth = container.scrollWidth / reels.length;
+        container.scrollTo({ left: next * itemWidth, behavior: 'smooth' });
+      }
+      return next;
+    });
+  };
+
+  const handleNextReel = () => {
+    setActiveReelIndex((prev) => {
+      const next = (prev + 1) % reels.length;
+      if (containerRef.current) {
+        const container = containerRef.current;
+        const itemWidth = container.scrollWidth / reels.length;
+        container.scrollTo({ left: next * itemWidth, behavior: 'smooth' });
+      }
+      return next;
+    });
+  };
+
+  const handleContainerScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const container = e.currentTarget;
+    const scrollPosition = container.scrollLeft;
+    const itemWidth = container.scrollWidth / reels.length;
+    const newIndex = Math.round(scrollPosition / itemWidth);
+    if (newIndex !== activeReelIndex && newIndex >= 0 && newIndex < reels.length) {
+      setActiveReelIndex(newIndex);
+    }
+  };
+
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalEmail, setModalEmail] = useState('');
+  const [modalSubmitting, setModalSubmitting] = useState(false);
+
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [testEmail, setTestEmail] = useState('');
+  const [testCity, setTestCity] = useState('');
+  const [testSubmitting, setTestSubmitting] = useState(false);
+  const [testSuccess, setTestSuccess] = useState(false);
+  const [testProgress, setTestProgress] = useState(0);
+
+  const handleTestNow = () => {
+    setShowTestModal(true);
+  };
+
+  const handleTestSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!testEmail || !testCity) {
+      toast({ title: 'Validation Error', description: 'Please fill in all fields.', variant: 'destructive' });
+      return;
+    }
+
+    setTestSubmitting(true);
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: testEmail, city: testCity }),
+      });
+
+      if (response.ok) {
+        setTestSuccess(true);
+        setTestProgress(0);
+        let progress = 0;
+        const interval = setInterval(() => {
+          progress += 5;
+          setTestProgress(progress);
+          if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              setShowTestModal(false);
+              setTestSuccess(false);
+              setTestEmail('');
+              setTestCity('');
+              setTestProgress(0);
+              window.location.href = 'https://www.railquickapp.com';
+            }, 300);
+          }
+        }, 80);
+      } else {
+        const errorData = await response.json();
+        toast({ title: 'Error', description: errorData.message || 'Failed to submit details.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Connection Error', description: 'Failed to reach servers. Please try again.', variant: 'destructive' });
+    } finally {
+      setTestSubmitting(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => setHeaderScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const success = await submitToWaitlist(waitlistEmail);
+      if (success) {
+        setWaitlistEmail('');
+        setShowSuccessOverlay(true);
+      } else {
+        toast({ title: 'Error', description: 'Failed to join waitlist.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Something went wrong.', variant: 'destructive' });
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleModalSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalSubmitting(true);
+    try {
+      const success = await submitToWaitlist(modalEmail);
+      if (success) {
+        setModalEmail('');
+        setShowModal(false);
+        setShowSuccessOverlay(true);
+      } else {
+        toast({ title: 'Error', description: 'Failed to submit.', variant: 'destructive' });
+      }
+    } catch {
+      toast({ title: 'Error', description: 'Something went wrong.', variant: 'destructive' });
+    }
+    setModalSubmitting(false);
+  };
+
+  const faqs = [
+    { question: 'How does RailQuick work?', answer: 'Simply enter your PNR, browse our catalog of essentials, and place your order. We\'ll deliver it right to your train seat at the next station or directly inside the running train.' },
+    { question: 'Which cities are currently serviced?', answer: 'We are currently testing our services in Delhi at Hazrat Nizamuddin, New Delhi, Delhi Junction, and Anand Vihar Terminal. We\'ll be expanding to more cities soon!' },
+    { question: 'What payment methods are accepted?', answer: 'We accept various payment methods, including credit/debit cards, UPI, and cash on delivery (COD) for your convenience.' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Email Modal (for Join Waitlist) */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+          <div className="relative bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl animate-scale-in">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 sm:top-4 sm:right-4 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white text-2xl">
+                
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Join Waitlist</h3>
+              <p className="text-sm sm:text-base text-slate-600 px-2">Enter your email to join the waitlist.</p>
+            </div>
+            <form onSubmit={handleModalSubmit} className="space-y-3 sm:space-y-4">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={modalEmail}
+                onChange={(e) => setModalEmail(e.target.value)}
+                required
+                className="w-full h-12 sm:h-14 px-4 sm:px-5 border-slate-200 rounded-xl text-center text-base"
+              />
+              <Button
+                type="submit"
+                disabled={modalSubmitting}
+                className="w-full h-12 sm:h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold text-base"
+              >
+                {modalSubmitting ? 'Submitting...' : 'Join Waitlist'}
+              </Button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Test App Modal */}
+      <AnimatePresence>
+        {showTestModal && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-950/30 backdrop-blur-md"
+              onClick={() => {
+                if (!testSubmitting && !testSuccess) setShowTestModal(false);
+              }}
+            />
+            
+            <motion.div
+              initial={{ scale: 0.95, y: 15, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 15, opacity: 0 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="relative bg-white rounded-[32px] p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden text-slate-900"
+            >
+              {!testSuccess ? (
+                <>
+                  <button
+                    onClick={() => setShowTestModal(false)}
+                    disabled={testSubmitting}
+                    className="absolute top-5 right-5 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-50 rounded-full transition-all"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+
+                  <div className="text-center mb-6 mt-2">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50/80 border border-blue-100 rounded-full text-xs font-bold text-blue-600 uppercase tracking-widest mb-3">
+                      <span>⚡</span>
+                      <span>Live App Beta</span>
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">
+                      Access RailQuick App
+                    </h3>
+                    <p className="text-sm text-slate-500 max-w-xs mx-auto leading-relaxed mt-1.5">
+                      Enter your details to launch the live platform.
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleTestSubmit} className="space-y-4 relative z-10">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block pl-1">Email Address</label>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="name@example.com"
+                          value={testEmail}
+                          onChange={(e) => setTestEmail(e.target.value)}
+                          disabled={testSubmitting}
+                          className="w-full h-13 pl-12 pr-4 bg-slate-50/50 border border-slate-200/80 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-900 placeholder-slate-400 outline-none text-base font-semibold shadow-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-500 block pl-1">Current City / Station</label>
+                      <div className="relative">
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. New Delhi"
+                          value={testCity}
+                          onChange={(e) => setTestCity(e.target.value)}
+                          disabled={testSubmitting}
+                          className="w-full h-13 pl-12 pr-4 bg-slate-50/50 border border-slate-200/80 rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-slate-900 placeholder-slate-400 outline-none text-base font-semibold shadow-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={testSubmitting}
+                      className="w-full h-13 mt-6 bg-slate-950 hover:bg-slate-900 text-white rounded-2xl font-bold text-base transition-all duration-300 shadow-lg shadow-slate-950/15 hover:shadow-xl hover:shadow-slate-950/20 active:scale-[0.98]"
+                    >
+                      {testSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="w-5 h-5 animate-spin text-white" /> Connecting Securely...
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center gap-2 group">
+                          Access Live App <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </span>
+                      )}
+                    </Button>
+                  </form>
+                </>
+              ) : (
+                <div className="py-8 text-center flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 bg-blue-50 rounded-full border border-blue-100 text-blue-600 flex items-center justify-center mb-6 relative">
+                    <div className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping opacity-35" />
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-900 mb-2">Connecting to App</h3>
+                  
+                  {/* Progress simulator */}
+                  <div className="flex flex-col items-center mt-5">
+                    <div className="flex justify-between text-xs text-slate-400 font-bold w-56 mb-1.5">
+                      <span>
+                        {testProgress < 30
+                          ? "Saving profile..."
+                          : testProgress >= 30 && testProgress < 75
+                          ? "Securing connection..."
+                          : "Opening App..."}
+                      </span>
+                      <span className="text-blue-600 font-black">{testProgress}%</span>
+                    </div>
+                    <div className="w-56 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200/50">
+                      <motion.div
+                        animate={{ width: `${testProgress}%` }}
+                        transition={{ duration: 0.1 }}
+                        className="bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 h-full rounded-full"
+                      />
+                  </div>
+                </div>
+              </div>
+            )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Navigation */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-slate-100 shadow-sm' : 'bg-white md:bg-transparent backdrop-blur-sm md:backdrop-blur-none'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            <Logo className="h-8 sm:h-12 w-auto" />
+
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-1 bg-slate-100/50 backdrop-blur-md p-1 rounded-full border border-slate-200/50">
+              {[
+                { label: 'Home', href: '/' },
+                { label: 'About', href: '/about' },
+                { label: 'Test Phase', href: '/test-phase' },
+                { label: 'Contact', href: '/contact' },
+                { label: "We're Hiring", href: '/hiring' },
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${item.href === '/'
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
+                    }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+
+            <div className="hidden md:block">
+              <Button 
+                onClick={handleTestNow}
+                className="bg-slate-900 hover:bg-slate-800 text-white rounded-full px-6 h-11 shadow-lg shadow-slate-900/20 transition-all hover:shadow-xl hover:-translate-y-0.5 font-bold"
+              >
+                Open App
+              </Button>
+            </div>
+
+            {/* Mobile Action Button */}
+            <div className="md:hidden">
+              <button 
+                onClick={handleTestNow}
+                className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-full px-4 py-1.5 text-xs font-extrabold shadow-2xs active:scale-95 transition-all lowercase"
+              >
+                open app
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Nav Links - Floating White Glass Pill Bar */}
+        <div className="flex px-4 pb-3 md:hidden w-full">
+          <div className="w-full bg-white/90 backdrop-blur-md border border-slate-200/60 rounded-full p-1 shadow-md">
+            <div className="flex items-center justify-between gap-0.5 w-full">
+              {[
+                { label: "Home", href: "/" },
+                { label: "About", href: "/about" },
+                { label: "Test", href: "/test-phase" },
+                { label: "Contact", href: "/contact" },
+                { label: "Hiring", href: "/hiring" }
+              ].map((item) => (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`flex-1 text-center py-2 px-1 rounded-full text-[11px] font-extrabold tracking-tight transition-all duration-300 ${item.label === "Home"
+                    ? "bg-white text-blue-600 shadow-sm border border-slate-100"
+                    : "text-slate-500 hover:text-slate-900"
+                    }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </nav>
+
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        {/* Mobile Hero */}
+        <div className="md:hidden relative min-h-[92vh] flex flex-col justify-end bg-slate-950 px-5 pt-32 pb-10 text-left overflow-hidden">
+          {/* Full-bleed portrait train background */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="/mobile-hero-train.jpg" 
+              alt="Train Background" 
+              className="w-full h-full object-cover object-center"
+            />
+            {/* Top white fog gradient fade under navbar */}
+            <div className="absolute top-0 inset-x-0 h-44 bg-gradient-to-b from-white via-white/80 via-white/20 to-transparent z-10 pointer-events-none" />
+            {/* Bottom dark gradient overlay behind text & buttons */}
+            <div className="absolute bottom-0 inset-x-0 h-[62%] bg-gradient-to-t from-slate-950 via-slate-950/85 via-slate-950/20 to-transparent z-10 pointer-events-none" />
+          </div>
+
+          {/* Animated Rain Streaks & Lightning FX */}
+          <RainThunderEffect />
+
+          <div className="relative flex flex-col items-start w-full z-20 mt-auto">
+            {/* Top dark translucent badges - Stacked vertically on left matching Reference Photo */}
+            <div className="flex flex-col items-start gap-2 mb-4">
+              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-sm">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                <span className="text-white text-[11px] font-bold">India&apos;s First • 5-Min Delivery</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-sm">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-emerald-400 text-[11px] font-bold">100+ Live Deliveries</span>
+              </div>
+            </div>
+
+            {/* Headline matching Picture 1 */}
+            <div className="text-left w-full mb-6 space-y-0.5">
+              <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap text-3xl sm:text-4xl font-black text-white tracking-tight">
+                <span className="shrink-0 text-white font-black">order</span>
+                <span className="inline-flex items-center text-blue-500 font-black">
+                  <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
+                    {typedText || "On-Seat"}
+                  </span>
+                  <span className="w-[3px] h-[0.85em] bg-blue-500 ml-1 inline-block animate-pulse rounded-full" />
+                </span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                Delivered to Your Seat
+              </h2>
+            </div>
+
+            {/* CTA Buttons Stacked Vertically */}
+            <div className="flex flex-col gap-3 w-full">
+              {/* Solid Blue Primary Button */}
+              <button
+                onClick={handleTestNow}
+                className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-base font-extrabold shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
+              >
+                Open App <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              {/* Dark Translucent Secondary Button */}
+              <Link href="/test-phase" className="w-full">
+                <button className="w-full py-4 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-white rounded-2xl text-sm font-bold active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2">
+                  Learn About Test Phase →
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Hero */}
+        <div className="hidden md:flex relative min-h-[85vh] lg:min-h-[90vh] items-center pt-16 pb-24 overflow-hidden bg-slate-950">
+          {/* Background Train Image & Rain/Thunderstorm Effect */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="/hero-train.jpg" 
+              alt="Train Background" 
+              className="w-full h-full object-cover object-right"
+            />
+            {/* Animated Rain & Thunderstorm Lightning Overlay */}
+            <RainThunderEffect />
+            {/* Smooth left-side white fog gradient so text sits cleanly on white */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 via-white/60 to-transparent w-full md:w-[65%] lg:w-[58%] z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent pointer-events-none z-10" />
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-6 py-20 lg:py-28 w-full z-20">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              
+              {/* Hero Left Content */}
+              <div className="text-left">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/95 backdrop-blur-md rounded-full border border-slate-200/90 shadow-sm">
+                    <span className="flex h-2.5 w-2.5 relative">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">India&apos;s First On-Seat Train Delivery</span>
+                  </div>
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100/90 backdrop-blur-md border border-slate-200/80 rounded-full shadow-sm">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-sm font-bold text-slate-800">100+ Live Deliveries</span>
+                  </div>
+                </div>
+
+                {/* Headline: Typewriter Animation */}
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-slate-900 leading-none mb-3 flex items-center flex-nowrap gap-3 sm:gap-4 whitespace-nowrap">
+                  <span className="shrink-0 text-slate-900">Order</span>
+                  <span className="inline-flex items-center text-slate-900 font-black">
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                      {typedText}
+                    </span>
+                    <span className="w-[4px] h-[0.85em] bg-blue-600 ml-2 inline-block animate-pulse rounded-full" />
+                  </span>
+                </h1>
+
+                <p className="text-2xl sm:text-3xl text-slate-700 font-extrabold mb-8 tracking-tight">
+                  Delivered to Your Seat
+                </p>
+
+                <div className="flex items-center gap-4">
+                  <Button
+                    onClick={handleTestNow}
+                    className="px-8 py-7 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-lg font-extrabold transition-all duration-300 hover:scale-[1.02] shadow-xl shadow-slate-900/20 flex items-center gap-2 group"
+                  >
+                    Open App <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                  <Link href="/test-phase">
+                    <Button variant="outline" className="px-8 py-7 bg-white border-2 border-slate-200 hover:border-slate-400 text-slate-800 rounded-2xl text-lg font-bold transition-all duration-300 hover:scale-[1.02] shadow-sm">
+                      Test Phase
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Brands Showcase (Featured In & Recognized By) - Clean Editorial Layout */}
+      <section className="relative z-20 mt-0 md:-mt-16 lg:-mt-20 mb-16 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] p-6 sm:p-8 overflow-hidden relative">
+            {/* Left and Right Fade Gradients */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-white via-white/95 to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-white via-white/95 to-transparent z-10" />
+
+            <div className="flex items-center justify-center gap-3 mb-6 relative z-10">
+              <span className="h-[1px] w-8 bg-slate-200" />
+              <span className="text-[11px] font-black text-slate-400 tracking-widest uppercase">
+                FEATURED IN &amp; RECOGNIZED BY
+              </span>
+              <span className="h-[1px] w-8 bg-slate-200" />
+            </div>
+
+            <div className="marquee-container relative overflow-hidden z-10">
+              <div className="flex animate-marquee marquee-content items-center">
+                {[...brands, ...brands, ...brands].map((brand, i) => (
+                  <div key={i} className="flex-shrink-0 px-3 sm:px-4">
+                    <div className="flex items-center gap-2.5 px-5 py-3 bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200/60 rounded-xl transition-all duration-200 group cursor-default">
+                      <span className="w-2 h-2 rounded-full bg-slate-400 group-hover:bg-blue-600 transition-colors" />
+                      <span className="text-xs sm:text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors whitespace-nowrap tracking-tight">
+                        {brand.name}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-16 sm:py-20 lg:py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-xs sm:text-sm font-bold text-blue-500 uppercase tracking-widest mb-3">How It Works</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">Get your essentials in 3 simple steps</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+
+            {/* ─── Step 01 ─── */}
+            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
+                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>01</span>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Enter PNR &amp; Train Details</h3>
+                  <p className="text-xs text-slate-400 font-medium leading-relaxed">Add your PNR &amp; journey details to explore available products.</p>
+                </div>
+              </div>
+              <div className="flex-shrink-0 w-[140px] sm:w-[150px] relative z-10">
+                <div className="relative bg-white rounded-2xl border border-slate-200/80 shadow-md p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="w-2.5 h-2.5 rounded-full bg-blue-100 flex items-center justify-center">
+                      <div className="w-1 h-1 rounded-full bg-blue-500" />
+                    </div>
+                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
+                  </div>
+                  <p className="text-[9px] font-bold text-slate-400 mb-1">PNR Number</p>
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 mb-2.5">
+                    <p className="text-[10px] font-bold text-slate-800 tracking-wider">2631527821</p>
+                  </div>
+                  <button className="w-full bg-slate-900 text-white text-[9px] font-extrabold py-2 rounded-lg tracking-wide">
+                    Search Train
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* ─── Step 02 ─── */}
+            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
+                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>02</span>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Order Your Essentials</h3>
+                  <p className="text-xs text-slate-400 font-medium leading-relaxed">Choose from 100+ verified essentials and place order.</p>
+                </div>
+              </div>
+              <div className="flex-shrink-0 w-[130px] sm:w-[145px] relative z-10 flex justify-center">
+                <img 
+                  src="/images/how-it-works-step2.png" 
+                  alt="Order Your Essentials" 
+                  className="w-full h-auto object-contain max-h-[100px] drop-shadow-sm" 
+                />
+              </div>
+            </div>
+
+            {/* ─── Step 03 ─── */}
+            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
+                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>03</span>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Delivered to Your Seat</h3>
+                  <p className="text-xs text-slate-400 font-medium leading-relaxed">We deliver to your seat at the right station. On-seat handoff confirmed.</p>
+                </div>
+              </div>
+              <div className="flex-shrink-0 w-[130px] sm:w-[145px] relative z-10 flex justify-center">
+                <img 
+                  src="/images/how-it-works-step3.png" 
+                  alt="Delivered to Your Seat" 
+                  className="w-full h-auto object-contain max-h-[100px] drop-shadow-sm" 
+                />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Instagram Reels Section */}
+
+
+      <section ref={reelsSectionRef} className="pt-12 pb-20 sm:pt-20 lg:pt-32 bg-white relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-emerald-100/30 rounded-full blur-[100px]" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 relative z-10 text-center">
+          <span className="text-xs sm:text-sm font-bold text-emerald-600 uppercase tracking-widest mb-3 inline-block">
+            RailQuick in Action
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 mt-2 mb-4 leading-tight">
+            Watch Our Story
+          </h2>
+          <p className="text-base sm:text-lg text-slate-550 max-w-xl mx-auto leading-relaxed">
+            See how we are transforming train travel across India.
+          </p>
+        </div>
+
+        {/* Reels Carousel */}
+        <div className="relative max-w-6xl mx-auto px-4">
+          {/* Left Arrow (Desktop) */}
+          <button
+            onClick={handlePrevReel}
+            className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 z-30 hidden md:flex w-12 h-12 bg-white hover:bg-slate-50 border border-slate-200 rounded-full items-center justify-center text-slate-900 shadow-xl transition-all hover:scale-110 active:scale-95"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+
+          {/* Right Arrow (Desktop) */}
+          <button
+            onClick={handleNextReel}
+            className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 z-30 hidden md:flex w-12 h-12 bg-white hover:bg-slate-50 border border-slate-200 rounded-full items-center justify-center text-slate-900 shadow-xl transition-all hover:scale-110 active:scale-95"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
+
+          {/* Scrolling Track */}
+          <div 
+            ref={containerRef}
+            onScroll={handleContainerScroll}
+            className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory py-4 sm:py-6 px-4 no-scrollbar scroll-smooth"
+          >
+            {reels.map((reel, index) => {
+              const isActive = index === activeReelIndex;
+              return (
+                <div
+                  key={reel.id}
+                  className={`flex-shrink-0 w-[260px] sm:w-[320px] aspect-[9/16] snap-center rounded-[24px] sm:rounded-[32px] overflow-hidden relative shadow-xl transition-all duration-300 border-2 sm:border-4 ${
+                    isActive
+                      ? 'border-slate-900 ring-4 ring-slate-900/10 z-30 shadow-slate-950/20'
+                      : 'border-slate-200/80 opacity-90 hover:opacity-100'
+                  }`}
+                >
+                  <iframe
+                    src={`https://www.instagram.com/p/${reel.shortcode}/embed/?autoplay=${isActive && isReelsInView ? '1' : '0'}`}
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    scrolling="no"
+                    className="absolute inset-0 w-full h-full bg-slate-900"
+                  ></iframe>
+                  
+                  {/* Overlay to disable iframe interaction when not active, allowing for smooth swipe/scroll */}
+                  {!isActive && <div className="absolute inset-0 z-10 cursor-pointer" />}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Carousel Dot Indicators */}
+          <div className="flex justify-center items-center gap-2 mt-6">
+            {reels.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setActiveReelIndex(idx);
+                  if (containerRef.current) {
+                    const container = containerRef.current;
+                    const itemWidth = container.scrollWidth / reels.length;
+                    container.scrollTo({ left: idx * itemWidth, behavior: 'smooth' });
+                  }
+                }}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                  idx === activeReelIndex 
+                    ? 'bg-blue-600 scale-125 shadow-md shadow-blue-500/20' 
+                    : 'bg-slate-300 hover:bg-slate-400'
+                }`}
+                aria-label={`Go to slide ${idx + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Products */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+            <p className="text-xs sm:text-sm font-bold text-emerald-600 uppercase tracking-widest mb-3">What We Deliver</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">Curated essentials for every journey</h2>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+            {/* 24/7 Support — spans full width on mobile, full width on desktop too */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="col-span-2 group p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-blue-50 border border-blue-100 hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-6 relative z-10">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Clock className="w-6 h-6 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2">24/7 Dedicated Support</h3>
+                  <p className="text-slate-600 leading-relaxed text-xs sm:text-base">Need help? Reach out to our dedicated support team anytime for any inquiries as we prepare for launch.</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Travel Essentials */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="group p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-6 relative z-10">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Package className="w-6 h-6 text-slate-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2">Travel Essentials</h3>
+                  <p className="text-slate-600 leading-relaxed text-xs sm:text-base">Blankets, pillows, locks, and travel accessories.</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Medicines */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="group p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-6 relative z-10">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Pill className="w-6 h-6 text-slate-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2">Medicines</h3>
+                  <p className="text-slate-600 leading-relaxed text-xs sm:text-base">Essential medicines and basic medical supplies.</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Hygiene */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="group p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-6 relative z-10">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                  <Sparkles className="w-6 h-6 text-slate-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2">Hygiene</h3>
+                  <p className="text-slate-600 leading-relaxed text-xs sm:text-base">Personal hygiene products and daily essentials.</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Remaining products */}
+            {[
+              { title: 'Electronics', desc: 'Chargers, power banks, earphones and gadgets.', icon: <Smartphone className="w-6 h-6 text-slate-600" /> },
+              { title: 'City Famous', desc: 'Specialities and famous items from your current city.', icon: <Building2 className="w-6 h-6 text-slate-600" /> },
+              { title: 'Snacks', desc: 'Quick munchies and travel-friendly snacks.', icon: <Cookie className="w-6 h-6 text-slate-600" /> },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: (i + 2) * 0.1 }}
+                className="group p-4 sm:p-8 rounded-2xl sm:rounded-3xl bg-slate-50 border border-slate-100 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-2 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-6 relative z-10">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                    {item.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-base sm:text-2xl font-bold text-slate-900 mb-1 sm:mb-2">{item.title}</h3>
+                    <p className="text-slate-600 leading-relaxed text-xs sm:text-base">{item.desc}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section ref={statsRef} className="py-16 sm:py-24 lg:py-32 bg-white border-t border-b border-slate-100/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12 sm:mb-16">
+            <p className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">By the numbers</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight">Growing every day</h2>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {stats.map((stat, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group bg-white border border-slate-200/70 rounded-[2rem] p-6 sm:p-8 lg:p-10 text-center hover:bg-blue-600 hover:border-blue-600 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/15 hover:-translate-y-2 flex flex-col items-center justify-center min-h-[130px] sm:min-h-[180px]"
+              >
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 group-hover:text-white mb-2 transition-colors duration-300 tabular-nums">
+                  {animatedValues[index]}{stat.suffix}
+                </div>
+                <div className="text-xs sm:text-sm text-slate-500 group-hover:text-blue-100 uppercase tracking-wider font-extrabold transition-colors duration-300 max-w-[150px] mx-auto leading-snug">
+                  {stat.label}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 sm:mb-10">
+          <div className="text-center">
+            <p className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">Testimonials</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">What our early users say</h2>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="flex gap-4 animate-marquee py-4">
+            {[...testimonials, ...testimonials].map((t, i) => (
+              <div key={i} className="flex-shrink-0 w-[280px] sm:w-[340px] bg-slate-50 rounded-xl sm:rounded-2xl p-5 sm:p-6 hover:bg-white hover:shadow-lg transition-all duration-300">
+                <div className="flex text-amber-400 mb-3">
+                  {[...Array(5)].map((_, j) => (
+                    <svg key={j} className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-slate-700 mb-3 sm:mb-4 leading-relaxed text-sm">&ldquo;{t.text}&rdquo;</p>
+                <div>
+                  <p className="font-semibold text-slate-900 text-sm">{t.name}</p>
+                  <p className="text-xs text-slate-500">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="absolute inset-y-0 left-0 w-16 sm:w-24 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-16 sm:w-24 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        </div>
+      </section>
+
+      {/* Why Travelers Choose Us (Redesigned Elevated Blue Box Layout BELOW Testimonials) */}
+      <section className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 via-blue-50/40 to-white text-slate-900 relative overflow-hidden border-t border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-100 border border-blue-200 text-blue-700 text-xs font-black uppercase tracking-widest mb-4 shadow-2xs">
+              THE RAILQUICK ADVANTAGE
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+              Why Travelers Choose Us
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 mt-3 font-medium">
+              Verified vendors, real-time live train tracking, and guaranteed seat delivery.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                badge: 'Speed & Motion',
+                title: 'Live Train Handshake',
+                description: 'Order while traveling. Handshake delivery executed seamlessly at upcoming station stops or directly inside moving train coaches.',
+                cardBorder: 'border-t-4 border-blue-600',
+                iconBg: 'bg-blue-50 text-blue-600 border-blue-200/60',
+                icon: <Zap className="w-7 h-7" />
+              },
+              {
+                badge: '100% Verified',
+                title: 'Guaranteed Quality',
+                description: 'Say goodbye to fake or overpriced platform products. We partner directly with verified brands and enforce strict quality audits.',
+                cardBorder: 'border-t-4 border-indigo-600',
+                iconBg: 'bg-indigo-50 text-indigo-600 border-indigo-200/60',
+                icon: <ShieldCheck className="w-7 h-7" />
+              },
+              {
+                badge: 'Curated Catalog',
+                title: 'On-Seat Convenience',
+                description: 'From emergency medicines to chargers, hygiene kits, baby care, and hot snacks—everything you need delivered to your exact seat.',
+                cardBorder: 'border-t-4 border-sky-600',
+                iconBg: 'bg-sky-50 text-sky-600 border-sky-200/60',
+                icon: <Package className="w-7 h-7" />
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                className={`group relative bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-8 hover:shadow-2xl hover:border-blue-400 hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between overflow-hidden shadow-sm sm:shadow-md shadow-slate-100 ${feature.cardBorder}`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-5 sm:mb-8">
+                    <div className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl border ${feature.iconBg} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-2xs`}>
+                      {feature.icon}
+                    </div>
+                    <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
+                      {feature.badge}
+                    </span>
+                  </div>
+
+                  <h3 className="text-lg sm:text-2xl font-black text-slate-900 mb-2 sm:mb-3 group-hover:text-blue-600 transition-colors">
+                    {feature.title}
+                  </h3>
+                  <p className="text-slate-600 text-xs sm:text-base leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8 sm:mb-10">
+            <p className="text-xs sm:text-sm font-bold text-blue-600 uppercase tracking-widest mb-3">FAQ</p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">Frequently Asked Questions</h2>
+          </div>
+
+          <div className="space-y-3 sm:space-y-4">
+            {faqs.map((faq, index) => (
+              <div key={index} className="border border-slate-200 rounded-xl sm:rounded-2xl overflow-hidden">
+                <button
+                  onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                  className="w-full flex items-center justify-between p-4 sm:p-5 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors"
+                >
+                  <span className="text-sm sm:text-base pr-4">{faq.question}</span>
+                  <svg className={`w-5 h-5 text-slate-400 transition-transform flex-shrink-0 ${activeFaq === index ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div className={`overflow-hidden transition-all duration-300 ${activeFaq === index ? 'max-h-96' : 'max-h-0'}`}>
+                  <p className="px-4 sm:px-5 pb-4 sm:pb-5 text-sm sm:text-base text-slate-600 leading-relaxed">{faq.answer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="waitlist" className="py-16 sm:py-24 bg-slate-950 relative overflow-hidden">
+        {/* Glow Effects */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative max-w-4xl mx-auto px-5 text-center">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
+            Be the first to experience RailQuick
+          </h2>
+          <p className="text-sm sm:text-lg text-slate-400 mb-10 max-w-xl mx-auto px-2 leading-relaxed">
+            Live Seat Delivery Tracking: Watch your order travel across the station directly to your seat in real-time.
+          </p>
+
+          <form onSubmit={handleWaitlistSubmit} className="flex flex-col sm:flex-row gap-3.5 max-w-md mx-auto">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={waitlistEmail}
+              onChange={(e) => setWaitlistEmail(e.target.value)}
+              required
+              className="flex-1 h-14 px-5 bg-white/5 border-white/10 text-white placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 rounded-2xl text-base"
+            />
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="h-14 px-8 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {isSubmitting ? 'Joining...' : 'Join Waitlist'}
+            </Button>
+          </form>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
+      {/* Success Overlay */}
+      <AnimatePresence>
+        {showSuccessOverlay && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xl"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 30, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 30, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-white rounded-[2rem] max-w-sm w-full text-center relative overflow-hidden shadow-2xl border border-white/20"
+            >
+              {/* Premium Header Area */}
+              <div className="relative h-32 bg-slate-900 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 opacity-50" />
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl opacity-50" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-400 rounded-full blur-3xl opacity-30" />
+                
+                <motion.div 
+                  initial={{ scale: 0, rotate: -45 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-2xl border border-white/20 relative z-10"
+                >
+                  <CheckCircle2 className="w-8 h-8 text-cyan-300" />
+                </motion.div>
+              </div>
+
+              {/* VIP Ticket Tear Line (CSS Trick) */}
+              <div className="relative h-6 bg-white flex items-center justify-between px-[-10px] -mt-3">
+                <div className="w-6 h-6 bg-slate-900/60 rounded-full absolute -left-3" />
+                <div className="w-full border-t-2 border-dashed border-slate-200" />
+                <div className="w-6 h-6 bg-slate-900/60 rounded-full absolute -right-3" />
+              </div>
+
+              <div className="p-8 pt-4">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                  <Star className="w-3 h-3 fill-amber-500 text-amber-500" /> 
+                </div>
+                
+                <h2 className="text-2xl font-black text-slate-900 mb-2 tracking-tight">You&apos;re On Board!</h2>
+                <p className="text-sm text-slate-500 mb-8 leading-relaxed px-2">
+                  Your spot is secured. We&apos;ll ping you the moment RailQuick launches at your station.
+                </p>
+
+                <Button
+                  onClick={() => setShowSuccessOverlay(false)}
+                  className="w-full h-14 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold text-base shadow-[0_0_40px_-10px_rgba(0,0,0,0.3)] transition-all hover:scale-[1.02]"
+                >
+                  Got It!
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
