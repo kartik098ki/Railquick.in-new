@@ -193,7 +193,7 @@ export default function HomePage() {
           setCatIndex((prev) => (prev + 1) % typingCategories.length);
         }
       }
-    }, isDeletingCat ? 110 : 220);
+    }, isDeletingCat ? 50 : 80);
 
     return () => clearTimeout(timeout);
   }, [typedText, isDeletingCat, catIndex, typingCategories]);
@@ -573,7 +573,7 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white md:bg-transparent ${headerScrolled ? 'md:bg-white/95 md:backdrop-blur-xl md:border-b md:border-slate-100 md:shadow-sm shadow-sm border-b border-slate-100 md:shadow-none md:border-0' : ''}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white md:bg-transparent shadow-[0_2px_24px_rgba(15,23,42,0.10)] md:shadow-none ${headerScrolled ? 'md:bg-white/95 md:backdrop-blur-xl md:border-b md:border-slate-100 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo — original colors, top hero dark gradient makes it readable */}
@@ -610,11 +610,12 @@ export default function HomePage() {
               </Button>
             </div>
 
-            {/* Mobile Action Button */}
-            <div className="md:hidden">
+            {/* Mobile Action Button — with small label above */}
+            <div className="md:hidden flex flex-col items-center gap-0.5">
+              <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">order</span>
               <button 
                 onClick={handleTestNow}
-                className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-full px-4 py-1.5 text-xs font-extrabold shadow-2xs active:scale-95 transition-all lowercase"
+                className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 rounded-full px-4 py-1.5 text-xs font-extrabold shadow-sm active:scale-95 transition-all lowercase"
               >
                 open app
               </button>
@@ -917,7 +918,7 @@ export default function HomePage() {
       {/* Instagram Reels Section */}
 
 
-      <section ref={reelsSectionRef} className="pt-12 pb-20 sm:pt-20 lg:pt-32 bg-white relative overflow-hidden">
+      <section ref={reelsSectionRef} className="pt-12 pb-20 sm:pt-20 lg:pt-32 bg-white relative touch-pan-y">
         <div className="absolute top-0 right-1/4 w-[400px] h-[400px] bg-emerald-100/30 rounded-full blur-[100px]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-8 relative z-10 text-center">
           <span className="text-xs sm:text-sm font-bold text-emerald-600 uppercase tracking-widest mb-3 inline-block">
