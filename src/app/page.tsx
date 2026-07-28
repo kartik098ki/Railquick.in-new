@@ -663,8 +663,8 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Mobile Hero — stable height, no dynamic dvh resize artifact on scroll */}
-        <div className="md:hidden relative bg-slate-950 overflow-hidden min-h-[640px] flex flex-col justify-between pt-28 pb-10">
+        {/* Mobile Hero — exact layout & white fog gradient matching reference photo */}
+        <div className="md:hidden relative bg-slate-950 overflow-hidden min-h-[660px] flex flex-col justify-between pt-28 pb-8 px-5">
 
           {/* Full-bleed portrait train background */}
           <div className="absolute inset-0 z-0">
@@ -675,54 +675,54 @@ export default function HomePage() {
             />
             {/* Rain & Lightning */}
             <RainThunderEffect />
-            {/* Smooth White-to-transparent fade at top under white nav header */}
-            <div className="absolute top-0 inset-x-0 z-10 pointer-events-none" style={{height:'130px', background:'linear-gradient(to bottom, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.45) 45%, rgba(255,255,255,0.1) 75%, transparent 100%)'}} />
-            {/* Bottom dark zone for buttons + text readability */}
-            <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{height:'60%', background:'linear-gradient(to top, #020617 45%, rgba(2,6,23,0.90) 65%, rgba(2,6,23,0.40) 82%, transparent 100%)'}} />
+            {/* Soft White Fog/Glow gradient fade at top under white nav header */}
+            <div className="absolute top-0 inset-x-0 h-44 bg-gradient-to-b from-white via-white/85 via-white/35 to-transparent z-10 pointer-events-none" />
+            {/* Bottom dark vignette overlay for headline & buttons readability */}
+            <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-slate-950 via-slate-950/90 via-slate-950/40 to-transparent z-10 pointer-events-none" />
           </div>
 
           {/* Mobile Hero Content Layout */}
-          <div className="relative z-20 flex flex-col justify-between flex-1 px-5">
+          <div className="relative z-20 flex flex-col justify-between flex-1 h-full w-full">
 
-            {/* Badges + headline at top of hero content */}
-            <div className="px-5 pt-3">
-              {/* Stacked badges */}
-              <div className="flex flex-col items-start gap-2 mb-3">
-                <div className="flex items-center gap-2 bg-slate-900/75 backdrop-blur-sm border border-slate-700/50 rounded-full px-3.5 py-2">
-                  <span className="flex h-2 w-2 relative">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                  </span>
-                  <span className="text-white text-xs font-bold">India&apos;s First • 5-Min Delivery</span>
-                </div>
-                <div className="flex items-center gap-2 bg-slate-900/75 backdrop-blur-sm border border-slate-700/50 rounded-full px-3.5 py-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span className="text-emerald-400 text-xs font-bold">100+ Live Deliveries</span>
-                </div>
+            {/* Badges stacked at top-left */}
+            <div className="flex flex-col items-start gap-2 pt-2">
+              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-md">
+                <span className="flex h-2 w-2 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                </span>
+                <span className="text-white text-xs font-bold">India&apos;s First • 5-Min Delivery</span>
               </div>
-
-              {/* Headline — Order {typedText} Delivered to Your Seat */}
-              <div className="mb-1">
-                <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(26px,8.5vw,38px)'}}>
-                  <span className="text-white">Order</span>
-                  <span className="inline-flex items-center">
-                    <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent font-black">
-                      {typedText}
-                    </span>
-                    <span className="inline-block bg-blue-500 ml-1.5 animate-pulse rounded-full" style={{width:'3px', height:'0.85em'}} />
-                  </span>
-                </div>
-                <div className="font-extrabold text-white tracking-tight leading-tight" style={{fontSize:'clamp(20px,6.5vw,28px)'}}>
-                  Delivered to Your Seat
-                </div>
+              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-md">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-emerald-400 text-xs font-bold">100+ Live Deliveries</span>
               </div>
             </div>
 
-            {/* Train visible area — flex grows to show train */}
-            <div className="flex-1" />
+            {/* Train visible area — flex grows to show train engine in middle */}
+            <div className="flex-1 min-h-[140px]" />
+
+            {/* Headline + Subtitle positioned below train engine */}
+            <div className="flex flex-col items-start gap-1.5 mb-5 text-left">
+              <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(28px,9vw,40px)'}}>
+                <span className="text-white">Order</span>
+                <span className="inline-flex items-center">
+                  <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent font-black">
+                    {typedText}
+                  </span>
+                  <span className="inline-block bg-blue-500 ml-1.5 animate-pulse rounded-full" style={{width:'3px', height:'0.85em'}} />
+                </span>
+              </div>
+              <div className="font-extrabold text-white tracking-tight leading-tight" style={{fontSize:'clamp(22px,7vw,32px)'}}>
+                Delivered to Your Seat
+              </div>
+              <p className="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed max-w-xs mt-1 opacity-90">
+                Get essentials delivered right to your seat while the train is moving. Fast, verified, reliable.
+              </p>
+            </div>
 
             {/* Buttons pinned to bottom */}
-            <div className="flex flex-col gap-3 pt-6">
+            <div className="flex flex-col gap-3 w-full">
               <button
                 onClick={handleTestNow}
                 className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-base font-extrabold shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
