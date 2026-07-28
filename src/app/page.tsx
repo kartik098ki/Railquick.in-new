@@ -172,8 +172,8 @@ export default function HomePage() {
   const reelsSectionRef = useRef<HTMLDivElement>(null);
   const [isReelsInView, setIsReelsInView] = useState(false);
 
-  // Authentic Typewriter animation state
-  const [typedText, setTypedText] = useState('');
+  // Authentic Typewriter animation state — starts with first word, no empty flash
+  const [typedText, setTypedText] = useState(TYPING_CATEGORIES[0]);
   const [catIndex, setCatIndex] = useState(0);
   const [isDeletingCat, setIsDeletingCat] = useState(false);
 
@@ -185,20 +185,24 @@ export default function HomePage() {
       if (typedText !== currentCategory) {
         timer = setTimeout(() => {
           setTypedText(currentCategory.slice(0, typedText.length + 1));
-        }, 90);
+        }, 70);
       } else {
+        // Stay full for 2.2 seconds before deleting
         timer = setTimeout(() => {
           setIsDeletingCat(true);
-        }, 2000);
+        }, 2200);
       }
     } else {
       if (typedText !== '') {
         timer = setTimeout(() => {
           setTypedText(currentCategory.slice(0, typedText.length - 1));
-        }, 45);
+        }, 40);
       } else {
-        setIsDeletingCat(false);
-        setCatIndex((prev) => (prev + 1) % TYPING_CATEGORIES.length);
+        // Brief pause when empty before typing next word
+        timer = setTimeout(() => {
+          setIsDeletingCat(false);
+          setCatIndex((prev) => (prev + 1) % TYPING_CATEGORIES.length);
+        }, 300);
       }
     }
 
@@ -697,18 +701,18 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Headline */}
+              {/* Headline — Order {typedText} Delivered to Your Seat */}
               <div className="mb-1">
-                <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(28px,9vw,40px)'}}>
-                  <span className="text-white">order</span>
+                <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(26px,8.5vw,38px)'}}>
+                  <span className="text-white">Order</span>
                   <span className="inline-flex items-center">
                     <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent font-black">
-                      {typedText || 'On-Seat'}
+                      {typedText}
                     </span>
-                    <span className="inline-block bg-blue-500 ml-1 animate-pulse rounded-full" style={{width:'3px', height:'0.85em'}} />
+                    <span className="inline-block bg-blue-500 ml-1.5 animate-pulse rounded-full" style={{width:'3px', height:'0.85em'}} />
                   </span>
                 </div>
-                <div className="font-extrabold text-white tracking-tight leading-tight" style={{fontSize:'clamp(20px,6.5vw,30px)'}}>
+                <div className="font-extrabold text-white tracking-tight leading-tight" style={{fontSize:'clamp(20px,6.5vw,28px)'}}>
                   Delivered to Your Seat
                 </div>
               </div>
@@ -956,12 +960,12 @@ export default function HomePage() {
             <ArrowRight className="w-5 h-5" />
           </button>
 
-          {/* Scrolling Track — touch-action pan-x so vertical page scroll still works */}
+          {/* Scrolling Track */}
           <div 
             ref={containerRef}
             onScroll={handleContainerScroll}
             className="flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory py-4 sm:py-6 px-4 no-scrollbar scroll-smooth"
-            style={{touchAction: 'pan-x'}}
+            style={{touchAction: 'pan-x pan-y'}}
           >
             {reels.map((reel, index) => {
               const isActive = index === activeReelIndex;
@@ -980,13 +984,11 @@ export default function HomePage() {
                     height="100%"
                     frameBorder="0"
                     scrolling="no"
-                    className="absolute inset-0 w-full h-full bg-slate-900"
+                    className="absolute inset-0 w-full h-full bg-slate-900 pointer-events-none md:pointer-events-auto"
                   ></iframe>
                   
-                  {/* Transparent overlay on mobile so page vertical scroll works 100% smoothly */}
-                  <div className="absolute inset-0 z-20 pointer-events-auto md:hidden" />
-                  {/* Desktop: block inactive iframes for smooth swipe */}
-                  {!isActive && <div className="absolute inset-0 z-20 cursor-pointer hidden md:block" />}
+                  {/* Full transparent touch overlay on card so vertical page scroll is 100% smooth */}
+                  <div className="absolute inset-0 z-20 cursor-pointer" />
                 </div>
               );
             })}
