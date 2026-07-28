@@ -25,14 +25,14 @@ export default function RainThunderEffect() {
     window.addEventListener("resize", handleResize);
 
     // Subtle, delicate realistic raindrops
-    const dropCount = 65;
+    const dropCount = 45;
     const drops = Array.from({ length: dropCount }, () => ({
       x: Math.random() * (width + 100) - 50,
       y: Math.random() * height,
-      length: Math.random() * 14 + 10,
-      speed: Math.random() * 10 + 12,
-      opacity: Math.random() * 0.3 + 0.12,
-      thickness: Math.random() * 0.5 + 0.6,
+      length: Math.random() * 12 + 8,
+      speed: Math.random() * 4 + 4,
+      opacity: Math.random() * 0.18 + 0.07,
+      thickness: Math.random() * 0.4 + 0.5,
     }));
 
     // Rain Loop

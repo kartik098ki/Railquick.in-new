@@ -573,10 +573,11 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${headerScrolled ? 'bg-white/95 backdrop-blur-xl border-b border-slate-100 shadow-sm' : 'bg-white md:bg-transparent backdrop-blur-sm md:backdrop-blur-none'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-white md:bg-transparent ${headerScrolled ? 'md:bg-white/95 md:backdrop-blur-xl md:border-b md:border-slate-100 md:shadow-sm shadow-sm border-b border-slate-100 md:shadow-none md:border-0' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16 sm:h-20">
-            <Logo className="h-8 sm:h-12 w-auto" />
+            {/* Logo — original colors, top hero dark gradient makes it readable */}
+            <Logo className="h-9 sm:h-12 w-auto" />
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1 bg-slate-100/50 backdrop-blur-md p-1 rounded-full border border-slate-200/50">
@@ -623,7 +624,7 @@ export default function HomePage() {
 
         {/* Mobile Nav Links - Floating White Glass Pill Bar */}
         <div className="flex px-4 pb-3 md:hidden w-full">
-          <div className="w-full bg-white/90 backdrop-blur-md border border-slate-200/60 rounded-full p-1 shadow-md">
+          <div className="w-full bg-white border border-slate-200/80 rounded-full p-1 shadow-[0_4px_20px_rgba(15,23,42,0.10)]">
             <div className="flex items-center justify-between gap-0.5 w-full">
               {[
                 { label: "Home", href: "/" },
@@ -651,72 +652,79 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Mobile Hero */}
-        <div className="md:hidden relative min-h-[92vh] flex flex-col justify-end bg-slate-950 px-5 pt-32 pb-10 text-left overflow-hidden">
+        {/* Mobile Hero — exact match to reference photo */}
+        <div className="md:hidden relative bg-slate-950 overflow-hidden" style={{height: '100dvh', minHeight: '680px'}}>
+
           {/* Full-bleed portrait train background */}
           <div className="absolute inset-0 z-0">
-            <img 
-              src="/mobile-hero-train.jpg" 
-              alt="Train Background" 
+            <img
+              src="/mobile-hero-train.jpg"
+              alt="Train Background"
               className="w-full h-full object-cover object-center"
             />
-            {/* Top white fog gradient fade under navbar */}
-            <div className="absolute top-0 inset-x-0 h-44 bg-gradient-to-b from-white via-white/80 via-white/20 to-transparent z-10 pointer-events-none" />
-            {/* Bottom dark gradient overlay behind text & buttons */}
-            <div className="absolute bottom-0 inset-x-0 h-[62%] bg-gradient-to-t from-slate-950 via-slate-950/85 via-slate-950/20 to-transparent z-10 pointer-events-none" />
+            {/* Rain & Lightning */}
+            <RainThunderEffect />
+            {/* White-to-transparent fade at very top — smooth blend from white nav into dark image */}
+            <div className="absolute top-0 inset-x-0 z-10 pointer-events-none" style={{height:'18%', background:'linear-gradient(to bottom, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.25) 35%, transparent 100%)'}} />
+            {/* Bottom dark zone for buttons + text readability */}
+            <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none" style={{height:'55%', background:'linear-gradient(to top, #020617 45%, rgba(2,6,23,0.90) 62%, rgba(2,6,23,0.50) 78%, transparent 100%)'}} />
           </div>
 
-          {/* Animated Rain Streaks & Lightning FX */}
-          <RainThunderEffect />
+          {/* Full-height flex layout — nav spacer → badges+headline → flex-1 train view → buttons */}
+          <div className="absolute inset-0 z-20 flex flex-col" style={{paddingTop: '116px'}}>
 
-          <div className="relative flex flex-col items-start w-full z-20 mt-auto">
-            {/* Top dark translucent badges - Stacked vertically on left matching Reference Photo */}
-            <div className="flex flex-col items-start gap-2 mb-4">
-              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-sm">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-                </span>
-                <span className="text-white text-[11px] font-bold">India&apos;s First • 5-Min Delivery</span>
-              </div>
-              <div className="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-sm">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-emerald-400 text-[11px] font-bold">100+ Live Deliveries</span>
-              </div>
-            </div>
-
-            {/* Headline matching Picture 1 */}
-            <div className="text-left w-full mb-6 space-y-0.5">
-              <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap text-3xl sm:text-4xl font-black text-white tracking-tight">
-                <span className="shrink-0 text-white font-black">order</span>
-                <span className="inline-flex items-center text-blue-500 font-black">
-                  <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent">
-                    {typedText || "On-Seat"}
+            {/* Badges + headline at top of hero content */}
+            <div className="px-5 pt-3">
+              {/* Stacked badges */}
+              <div className="flex flex-col items-start gap-2 mb-3">
+                <div className="flex items-center gap-2 bg-slate-900/75 backdrop-blur-sm border border-slate-700/50 rounded-full px-3.5 py-2">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                   </span>
-                  <span className="w-[3px] h-[0.85em] bg-blue-500 ml-1 inline-block animate-pulse rounded-full" />
-                </span>
+                  <span className="text-white text-xs font-bold">India&apos;s First • 5-Min Delivery</span>
+                </div>
+                <div className="flex items-center gap-2 bg-slate-900/75 backdrop-blur-sm border border-slate-700/50 rounded-full px-3.5 py-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span className="text-emerald-400 text-xs font-bold">100+ Live Deliveries</span>
+                </div>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
-                Delivered to Your Seat
-              </h2>
+
+              {/* Headline */}
+              <div className="mb-1">
+                <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(28px,9vw,40px)'}}>
+                  <span className="text-white">order</span>
+                  <span className="inline-flex items-center">
+                    <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-sky-400 bg-clip-text text-transparent font-black">
+                      {typedText || 'On-Seat'}
+                    </span>
+                    <span className="inline-block bg-blue-500 ml-1 animate-pulse rounded-full" style={{width:'3px', height:'0.85em'}} />
+                  </span>
+                </div>
+                <div className="font-extrabold text-white tracking-tight leading-tight" style={{fontSize:'clamp(20px,6.5vw,30px)'}}>
+                  Delivered to Your Seat
+                </div>
+              </div>
             </div>
 
-            {/* CTA Buttons Stacked Vertically */}
-            <div className="flex flex-col gap-3 w-full">
-              {/* Solid Blue Primary Button */}
+            {/* Train visible area — flex grows to show train */}
+            <div className="flex-1" />
+
+            {/* Buttons pinned to bottom */}
+            <div className="flex flex-col gap-3 px-5 pb-10">
               <button
                 onClick={handleTestNow}
                 className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl text-base font-extrabold shadow-xl shadow-blue-600/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2 group"
               >
                 Open App <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              {/* Dark Translucent Secondary Button */}
               <Link href="/test-phase" className="w-full">
-                <button className="w-full py-4 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-white rounded-2xl text-sm font-bold active:scale-[0.98] transition-all shadow-md flex items-center justify-center gap-2">
+                <button className="w-full py-4 bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-white rounded-2xl text-sm font-bold active:scale-[0.98] transition-all flex items-center justify-center">
                   Learn About Test Phase →
                 </button>
               </Link>
             </div>
+
           </div>
         </div>
 
@@ -793,18 +801,19 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Brands Showcase (Featured In & Recognized By) - Clean Editorial Layout */}
-      <section className="relative z-20 mt-0 md:-mt-16 lg:-mt-20 mb-16 px-4 sm:px-6">
+      {/* Brands Showcase (Featured In & Recognized By) */}
+      <section className="relative z-20 mt-0 md:-mt-16 lg:-mt-20 mb-6 md:mb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] p-6 sm:p-8 overflow-hidden relative">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] p-5 sm:p-8 overflow-hidden relative">
             {/* Left and Right Fade Gradients */}
             <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-white via-white/95 to-transparent z-10" />
             <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-white via-white/95 to-transparent z-10" />
 
-            <div className="flex items-center justify-center gap-3 mb-6 relative z-10">
+            {/* Label — visible on all sizes */}
+            <div className="flex items-center justify-center gap-3 mb-4 sm:mb-6 relative z-10">
               <span className="h-[1px] w-8 bg-slate-200" />
-              <span className="text-[11px] font-black text-slate-400 tracking-widest uppercase">
-                FEATURED IN &amp; RECOGNIZED BY
+              <span className="text-[10px] sm:text-[11px] font-black text-slate-400 tracking-widest uppercase">
+                FEATURED IN
               </span>
               <span className="h-[1px] w-8 bg-slate-200" />
             </div>
@@ -828,7 +837,7 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-white">
+      <section className="py-10 sm:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <p className="text-xs sm:text-sm font-bold text-blue-500 uppercase tracking-widest mb-3">How It Works</p>
