@@ -702,28 +702,6 @@ export default function HomePage() {
             {/* Train visible area — flex grows to show train engine in middle */}
             <div className="flex-1 min-h-[140px]" />
 
-            {/* Live Station Order Status Pill */}
-            <div className="w-full bg-slate-900/90 backdrop-blur-xl border border-blue-500/40 rounded-2xl p-3 mb-4 shadow-xl flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-xl bg-blue-600/30 border border-blue-400/50 text-blue-300 flex items-center justify-center shrink-0">
-                  <Train className="w-4 h-4 animate-pulse" />
-                </div>
-                <div className="min-w-0 text-left">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] font-black uppercase text-blue-400 tracking-wider">Live Delivery Track</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  </div>
-                  <p className="text-xs font-bold text-white truncate">Rajdhani Express • New Delhi (ETA 8m)</p>
-                </div>
-              </div>
-              <button 
-                onClick={handleTestNow}
-                className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shrink-0 active:scale-95 transition-transform shadow-md"
-              >
-                Track Live
-              </button>
-            </div>
-
             {/* Headline + Subtitle positioned below train engine */}
             <div className="flex flex-col items-start gap-1.5 mb-4 text-left">
               <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(28px,9vw,40px)'}}>
@@ -870,84 +848,106 @@ export default function HomePage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-10 sm:py-20 lg:py-24 bg-white">
+      <section className="py-12 sm:py-20 lg:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-xs sm:text-sm font-bold text-blue-500 uppercase tracking-widest mb-3">How It Works</p>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900">Get your essentials in 3 simple steps</h2>
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-xs font-extrabold text-blue-600 uppercase tracking-widest mb-3">
+              ⚡ 3 Simple Steps
+            </span>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">Get your essentials in 3 simple steps</h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-medium mt-2">Designed for fast, effortless ordering right from your moving train.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-8">
 
             {/* ─── Step 01 ─── */}
-            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
-              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
-                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>01</span>
+            <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/20 border border-slate-200/80 rounded-3xl p-5 sm:p-7 flex flex-col sm:flex-row items-start justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-blue-300 group">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10 w-full">
+                <div className="flex items-center justify-between mb-3 w-full">
+                  <span className="px-3 py-1 bg-blue-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">
+                    Step 01
+                  </span>
+                  <span className="text-xs font-extrabold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+                    Search PNR
+                  </span>
+                </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Enter PNR &amp; Train Details</h3>
-                  <p className="text-xs text-slate-400 font-medium leading-relaxed">Add your PNR &amp; journey details to explore available products.</p>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1 leading-snug">Enter PNR &amp; Train Details</h3>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Add your PNR &amp; journey details to explore live available products at your upcoming station.</p>
                 </div>
               </div>
-              <div className="flex-shrink-0 w-[140px] sm:w-[150px] relative z-10">
-                <div className="relative bg-white rounded-2xl border border-slate-200/80 shadow-md p-3">
+              <div className="w-full sm:w-[140px] shrink-0 relative z-10 mt-2 sm:mt-0">
+                <div className="relative bg-white rounded-2xl border border-slate-200 shadow-md p-3 group-hover:scale-105 transition-transform duration-300">
                   <div className="flex items-center justify-between mb-2">
-                    <div className="w-2.5 h-2.5 rounded-full bg-blue-100 flex items-center justify-center">
-                      <div className="w-1 h-1 rounded-full bg-blue-500" />
-                    </div>
-                    <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
+                    <span className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">PNR AUTO-FILL</span>
+                    <div className="w-3.5 h-3.5 rounded-full bg-emerald-500 flex items-center justify-center text-[8px] text-white font-bold">✓</div>
                   </div>
-                  <p className="text-[9px] font-bold text-slate-400 mb-1">PNR Number</p>
-                  <div className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1.5 mb-2.5">
-                    <p className="text-[10px] font-bold text-slate-800 tracking-wider">2631527821</p>
+                  <div className="bg-slate-50 border border-slate-200/90 rounded-xl px-2.5 py-2 mb-2 text-center">
+                    <p className="text-[11px] font-black text-slate-900 tracking-widest">2631527821</p>
+                    <p className="text-[8px] font-bold text-blue-600 mt-0.5">Coach B4 • Seat 42A</p>
                   </div>
-                  <button className="w-full bg-slate-900 text-white text-[9px] font-extrabold py-2 rounded-lg tracking-wide">
-                    Search Train
+                  <button className="w-full bg-slate-900 hover:bg-slate-800 text-white text-[9px] font-extrabold py-2 rounded-xl tracking-wide shadow-sm">
+                    Search Train →
                   </button>
                 </div>
               </div>
             </div>
 
             {/* ─── Step 02 ─── */}
-            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md group">
-              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
-                <span className="text-5xl sm:text-6xl font-black leading-none mb-4 select-none" style={{ color: '#b0c7f2' }}>02</span>
+            <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/20 border border-slate-200/80 rounded-3xl p-5 sm:p-7 flex flex-col sm:flex-row items-start justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-blue-300 group">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10 w-full">
+                <div className="flex items-center justify-between mb-3 w-full">
+                  <span className="px-3 py-1 bg-blue-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">
+                    Step 02
+                  </span>
+                  <span className="text-xs font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                    100+ Items
+                  </span>
+                </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Order Your Essentials</h3>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Choose from 100+ verified essentials &amp; place order in seconds.</p>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1 leading-snug">Order Your Essentials</h3>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Choose from 100+ verified snacks, chargers, medicines &amp; travel kits in seconds.</p>
                 </div>
               </div>
-              <div className="flex-shrink-0 w-[130px] sm:w-[155px] relative z-10">
+              <div className="w-full sm:w-[145px] shrink-0 relative z-10 mt-2 sm:mt-0">
                 <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md group-hover:shadow-lg transition-all duration-300 bg-white p-1">
                   <img 
                     src="/images/order-essentials-real.jpg" 
                     alt="Order Your Essentials" 
-                    className="w-full h-24 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-28 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
                   />
-                  <div className="absolute top-2 left-2 bg-slate-900/85 backdrop-blur-xs text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-white/20 shadow-xs">
-                    Real Order
+                  <div className="absolute top-2 left-2 bg-slate-900/90 backdrop-blur-xs text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-white/20 shadow-xs">
+                    Verified Order
                   </div>
                 </div>
               </div>
             </div>
 
             {/* ─── Step 03 ─── */}
-            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md group">
-              <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
-                <span className="text-5xl sm:text-6xl font-black leading-none mb-4 select-none" style={{ color: '#b0c7f2' }}>03</span>
+            <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/20 border border-slate-200/80 rounded-3xl p-5 sm:p-7 flex flex-col sm:flex-row items-start justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:border-blue-300 group">
+              <div className="flex flex-col justify-between flex-1 min-w-0 z-10 w-full">
+                <div className="flex items-center justify-between mb-3 w-full">
+                  <span className="px-3 py-1 bg-blue-600 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-sm">
+                    Step 03
+                  </span>
+                  <span className="text-xs font-extrabold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100">
+                    On-Seat Handoff
+                  </span>
+                </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Delivered to Your Seat</h3>
-                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Direct seat handoff confirmed at your train coach and seat number.</p>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1 leading-snug">Delivered to Your Seat</h3>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Direct seat handoff confirmed at your train coach and seat number upon arrival.</p>
                 </div>
               </div>
-              <div className="flex-shrink-0 w-[130px] sm:w-[155px] relative z-10">
+              <div className="w-full sm:w-[145px] shrink-0 relative z-10 mt-2 sm:mt-0">
                 <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md group-hover:shadow-lg transition-all duration-300 bg-white p-1">
                   <img 
                     src="/images/delivered-to-seat-real.jpg" 
                     alt="Delivered to Your Seat" 
-                    className="w-full h-24 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
+                    className="w-full h-28 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
                   />
                   <div className="absolute top-2 left-2 bg-blue-600/90 backdrop-blur-xs text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-white/20 shadow-xs">
-                    On-Seat Handoff
+                    Seat Delivery
                   </div>
                 </div>
               </div>
@@ -1429,47 +1429,6 @@ export default function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Sticky Mobile App Bottom Bar — Ultra App-like UI */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-4 py-2 shadow-[0_-8px_30px_rgba(15,23,42,0.12)]">
-        <div className="flex items-center justify-around">
-          <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="flex flex-col items-center gap-1 py-1 px-3 text-blue-600 font-bold active:scale-95 transition-transform"
-          >
-            <Train className="w-5 h-5" />
-            <span className="text-[10px] font-extrabold tracking-tight">Home</span>
-          </button>
-
-          <button 
-            onClick={() => {
-              const el = document.getElementById('products-section') || document.querySelector('section:nth-of-type(4)');
-              el?.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 hover:text-slate-900 font-semibold active:scale-95 transition-transform"
-          >
-            <Package className="w-5 h-5" />
-            <span className="text-[10px] font-bold tracking-tight">Essentials</span>
-          </button>
-
-          <button 
-            onClick={handleTestNow}
-            className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-600/30 active:scale-95 transition-all"
-          >
-            <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-            <span>Open App</span>
-          </button>
-
-          <Link 
-            href="/contact"
-            className="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 hover:text-slate-900 font-semibold active:scale-95 transition-transform"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span className="text-[10px] font-bold tracking-tight">Support</span>
-          </Link>
-        </div>
-      </div>
-      <div className="md:hidden h-16 pointer-events-none" />
     </div>
   );
 }
