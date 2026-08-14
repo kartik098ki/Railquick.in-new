@@ -664,7 +664,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Mobile Hero — exact layout & white fog gradient matching reference photo */}
-        <div className="md:hidden relative bg-slate-950 overflow-hidden min-h-[660px] flex flex-col justify-between pt-28 pb-8 px-5">
+        <div className="md:hidden relative bg-slate-950 overflow-hidden min-h-[680px] flex flex-col justify-between pt-36 sm:pt-40 pb-12 px-5">
 
           {/* Full-bleed portrait train background */}
           <div className="absolute inset-0 z-0">
@@ -684,26 +684,48 @@ export default function HomePage() {
           {/* Mobile Hero Content Layout */}
           <div className="relative z-20 flex flex-col justify-between flex-1 h-full w-full">
 
-            {/* Badges stacked at top-left */}
-            <div className="flex flex-col items-start gap-2 pt-2">
-              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-md">
-                <span className="flex h-2 w-2 relative">
+            {/* Badges stacked at top-left — generous top margin & no overlap */}
+            <div className="flex flex-col items-start gap-2 pt-1">
+              <div className="flex items-center gap-2 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-full px-3.5 py-1.5 shadow-lg max-w-full">
+                <span className="flex h-2 w-2 relative shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
                 </span>
-                <span className="text-white text-xs font-bold">India&apos;s First • 5-Min Delivery</span>
+                <span className="text-white text-[11px] sm:text-xs font-bold tracking-tight">India&apos;s First On-Seat Train Delivery</span>
               </div>
-              <div className="flex items-center gap-2 bg-slate-950/80 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-md">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span className="text-emerald-400 text-xs font-bold">100+ Live Deliveries</span>
+              <div className="flex items-center gap-2 bg-slate-950/90 backdrop-blur-md border border-slate-700/80 rounded-full px-3.5 py-1.5 shadow-lg max-w-full">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+                <span className="text-emerald-400 text-[11px] sm:text-xs font-bold tracking-tight">100+ Live Deliveries</span>
               </div>
             </div>
 
             {/* Train visible area — flex grows to show train engine in middle */}
             <div className="flex-1 min-h-[140px]" />
 
+            {/* Live Station Order Status Pill */}
+            <div className="w-full bg-slate-900/90 backdrop-blur-xl border border-blue-500/40 rounded-2xl p-3 mb-4 shadow-xl flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-xl bg-blue-600/30 border border-blue-400/50 text-blue-300 flex items-center justify-center shrink-0">
+                  <Train className="w-4 h-4 animate-pulse" />
+                </div>
+                <div className="min-w-0 text-left">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-black uppercase text-blue-400 tracking-wider">Live Delivery Track</span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                  </div>
+                  <p className="text-xs font-bold text-white truncate">Rajdhani Express • New Delhi (ETA 8m)</p>
+                </div>
+              </div>
+              <button 
+                onClick={handleTestNow}
+                className="bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black px-3 py-1.5 rounded-xl shrink-0 active:scale-95 transition-transform shadow-md"
+              >
+                Track Live
+              </button>
+            </div>
+
             {/* Headline + Subtitle positioned below train engine */}
-            <div className="flex flex-col items-start gap-1.5 mb-5 text-left">
+            <div className="flex flex-col items-start gap-1.5 mb-4 text-left">
               <div className="flex items-center flex-nowrap gap-2 whitespace-nowrap font-black text-white tracking-tight" style={{fontSize:'clamp(28px,9vw,40px)'}}>
                 <span className="text-white">Order</span>
                 <span className="inline-flex items-center">
@@ -816,9 +838,9 @@ export default function HomePage() {
       <section className="relative z-20 mt-0 md:-mt-16 lg:-mt-20 mb-6 md:mb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-[0_12px_40px_rgba(15,23,42,0.06)] p-5 sm:p-8 overflow-hidden relative">
-            {/* Left and Right Fade Gradients */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-white via-white/95 to-transparent z-10" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-gradient-to-l from-white via-white/95 to-transparent z-10" />
+            {/* Left and Right Fade Gradients — smaller on mobile so logos are fully visible */}
+            <div className="pointer-events-none absolute inset-y-0 left-0 w-6 sm:w-28 bg-gradient-to-r from-white via-white/95 to-transparent z-10" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 w-6 sm:w-28 bg-gradient-to-l from-white via-white/95 to-transparent z-10" />
 
             {/* Label — visible on all sizes */}
             <div className="flex items-center justify-center gap-3 mb-4 sm:mb-6 relative z-10">
@@ -886,38 +908,48 @@ export default function HomePage() {
             </div>
 
             {/* ─── Step 02 ─── */}
-            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
+            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md group">
               <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
-                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>02</span>
+                <span className="text-5xl sm:text-6xl font-black leading-none mb-4 select-none" style={{ color: '#b0c7f2' }}>02</span>
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Order Your Essentials</h3>
-                  <p className="text-xs text-slate-400 font-medium leading-relaxed">Choose from 100+ verified essentials and place order.</p>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Choose from 100+ verified essentials &amp; place order in seconds.</p>
                 </div>
               </div>
-              <div className="flex-shrink-0 w-[130px] sm:w-[145px] relative z-10 flex justify-center">
-                <img 
-                  src="/images/how-it-works-step2.png" 
-                  alt="Order Your Essentials" 
-                  className="w-full h-auto object-contain max-h-[100px] drop-shadow-sm" 
-                />
+              <div className="flex-shrink-0 w-[130px] sm:w-[155px] relative z-10">
+                <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md group-hover:shadow-lg transition-all duration-300 bg-white p-1">
+                  <img 
+                    src="/images/order-essentials-real.jpg" 
+                    alt="Order Your Essentials" 
+                    className="w-full h-24 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute top-2 left-2 bg-slate-900/85 backdrop-blur-xs text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-white/20 shadow-xs">
+                    Real Order
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* ─── Step 03 ─── */}
-            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md">
+            <div className="bg-slate-50/60 border border-slate-150 rounded-3xl p-6 sm:p-7 flex flex-row items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 hover:bg-slate-50 hover:shadow-md group">
               <div className="flex flex-col justify-between flex-1 min-w-0 z-10">
-                <span className="text-5xl sm:text-6xl font-black leading-none mb-6 select-none" style={{ color: '#b0c7f2' }}>03</span>
+                <span className="text-5xl sm:text-6xl font-black leading-none mb-4 select-none" style={{ color: '#b0c7f2' }}>03</span>
                 <div>
                   <h3 className="text-base sm:text-lg font-black text-slate-900 mb-1.5 leading-snug">Delivered to Your Seat</h3>
-                  <p className="text-xs text-slate-400 font-medium leading-relaxed">We deliver to your seat at the right station. On-seat handoff confirmed.</p>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">Direct seat handoff confirmed at your train coach and seat number.</p>
                 </div>
               </div>
-              <div className="flex-shrink-0 w-[130px] sm:w-[145px] relative z-10 flex justify-center">
-                <img 
-                  src="/images/how-it-works-step3.png" 
-                  alt="Delivered to Your Seat" 
-                  className="w-full h-auto object-contain max-h-[100px] drop-shadow-sm" 
-                />
+              <div className="flex-shrink-0 w-[130px] sm:w-[155px] relative z-10">
+                <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md group-hover:shadow-lg transition-all duration-300 bg-white p-1">
+                  <img 
+                    src="/images/delivered-to-seat-real.jpg" 
+                    alt="Delivered to Your Seat" 
+                    className="w-full h-24 sm:h-28 object-cover rounded-xl group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute top-2 left-2 bg-blue-600/90 backdrop-blur-xs text-white text-[9px] font-extrabold px-2 py-0.5 rounded-full border border-white/20 shadow-xs">
+                    On-Seat Handoff
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1020,7 +1052,7 @@ export default function HomePage() {
       </section>
 
       {/* Products */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-slate-50 to-white">
+      <section id="products-section" className="py-12 sm:py-16 lg:py-20 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
             <p className="text-xs sm:text-sm font-bold text-emerald-600 uppercase tracking-widest mb-3">What We Deliver</p>
@@ -1397,6 +1429,47 @@ export default function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Sticky Mobile App Bottom Bar — Ultra App-like UI */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 px-4 py-2 shadow-[0_-8px_30px_rgba(15,23,42,0.12)]">
+        <div className="flex items-center justify-around">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex flex-col items-center gap-1 py-1 px-3 text-blue-600 font-bold active:scale-95 transition-transform"
+          >
+            <Train className="w-5 h-5" />
+            <span className="text-[10px] font-extrabold tracking-tight">Home</span>
+          </button>
+
+          <button 
+            onClick={() => {
+              const el = document.getElementById('products-section') || document.querySelector('section:nth-of-type(4)');
+              el?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 hover:text-slate-900 font-semibold active:scale-95 transition-transform"
+          >
+            <Package className="w-5 h-5" />
+            <span className="text-[10px] font-bold tracking-tight">Essentials</span>
+          </button>
+
+          <button 
+            onClick={handleTestNow}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-full text-xs font-black shadow-lg shadow-blue-600/30 active:scale-95 transition-all"
+          >
+            <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+            <span>Open App</span>
+          </button>
+
+          <Link 
+            href="/contact"
+            className="flex flex-col items-center gap-1 py-1 px-3 text-slate-500 hover:text-slate-900 font-semibold active:scale-95 transition-transform"
+          >
+            <MessageCircle className="w-5 h-5" />
+            <span className="text-[10px] font-bold tracking-tight">Support</span>
+          </Link>
+        </div>
+      </div>
+      <div className="md:hidden h-16 pointer-events-none" />
     </div>
   );
 }

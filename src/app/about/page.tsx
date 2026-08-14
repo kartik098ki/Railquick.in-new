@@ -352,7 +352,7 @@ export default function AboutPage() {
                 {member.isMoreCard ? (
                   <div className="flex flex-col items-center justify-center h-full py-4">
                     <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex flex-col items-center justify-center mb-6 shadow-xl shadow-blue-600/20 group-hover:scale-105 transition-transform duration-300 border-2 border-blue-400/30">
-                      <span className="text-3xl font-black">+12</span>
+                      <span className="text-3xl font-black">+5</span>
                       <span className="text-[10px] font-bold uppercase tracking-wider text-blue-100">Team</span>
                     </div>
                     <h3 className="text-xl font-black text-slate-900 mb-1">{member.name}</h3>
