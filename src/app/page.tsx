@@ -407,6 +407,8 @@ export default function HomePage() {
     { question: 'How does RailQuick work?', answer: 'Simply enter your PNR, browse our catalog of essentials, and place your order. We\'ll deliver it right to your train seat at the next station or directly inside the running train.' },
     { question: 'Which cities are currently serviced?', answer: 'We are currently testing our services in Delhi at Hazrat Nizamuddin, New Delhi, Delhi Junction, and Anand Vihar Terminal. We\'ll be expanding to more cities soon!' },
     { question: 'What payment methods are accepted?', answer: 'We accept various payment methods, including credit/debit cards, UPI, and cash on delivery (COD) for your convenience.' },
+    { question: 'What items can I order on the train?', answer: 'Snacks, beverages, emergency medicines, smartphone chargers, power banks, travel pillows, hygiene kits, and local city specialties.' },
+    { question: 'What happens if my train is delayed?', answer: 'Our logistics platform tracks your train\'s live running status in real-time. Our station delivery runners coordinate automatically to meet your exact coach when your train arrives.' },
   ];
 
   return (
